@@ -1,0 +1,13 @@
+name: Artifact demo
+on: workflow_dispatch
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Produce a report
+        run: echo "scan results would go here" > report.txt
+      - name: Save it as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: report
+          path: report.txt
