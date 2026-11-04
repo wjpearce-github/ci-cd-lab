@@ -1,0 +1,9 @@
+name: Gated deploy
+on: workflow_dispatch
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy
+        run: echo "Deploying to production"
