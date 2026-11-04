@@ -7,13 +7,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Check out the code
         uses: actions/checkout@v4
-      - name: Set up python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install deps
+      - name: Install dependencies
         run: pip install -r app/requirements.txt
-      - name: Run test
+      - name: Run tests
         run: pytest app/
+      - name: SCA + secret scan (Trivy filesystem)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: app/
+          severity: HIGH,CRITICAL
+          exit-code: 1
