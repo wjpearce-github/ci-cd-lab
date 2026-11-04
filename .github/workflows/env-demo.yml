@@ -1,0 +1,10 @@
+name: Env demo
+on: workflow_dispatch
+jobs:
+  show:
+    runs-on: ubuntu-latest
+    env:
+      APP_REGION: eu-west-2
+    steps:
+      - name: Show the variable
+        run: echo "Deploying to $APP_REGION"
