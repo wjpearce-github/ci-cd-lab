@@ -1,0 +1,19 @@
+name: Deploy
+on: workflow_dispatch
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::ACCOUNT_ID:role/github-lab-deploy
+          aws-region: eu-west-2
+      - name: Who am I in AWS?
+        run: aws sts get-caller-identity
+      - name: Deploy
+        run: echo "push image to ECR and update the service here"
