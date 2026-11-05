@@ -1,9 +1,5 @@
-# Deploys to AWS using GitHub OIDC: no long-lived AWS keys are stored in GitHub.
-#
-# The IAM role's trust policy only accepts tokens whose `sub` claim matches this
-# repo on the main branch. If you change how this job runs (e.g. add
-# `environment:`, run from another branch, or use a reusable workflow), the
-# `sub` claim changes and the trust policy must be updated to match.
+# Deploys to AWS with GitHub OIDC: no AWS keys are stored in GitHub.
+# The role's trust policy only accepts tokens from this repo's main branch.
 name: Deploy
 
 on: workflow_dispatch
@@ -19,8 +15,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write   # required to request the OIDC token
-      contents: read    # required by actions/checkout
+      id-token: write   # lets this job ask GitHub for an OIDC token
+      contents: read    # lets actions/checkout read the repo
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
