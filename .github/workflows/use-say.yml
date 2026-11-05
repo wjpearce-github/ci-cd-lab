@@ -1,0 +1,7 @@
+name: Use the shared workflow
+on: workflow_dispatch
+jobs:
+  greet:
+    uses: ./.github/workflows/say.yml
+    with:
+      who: team

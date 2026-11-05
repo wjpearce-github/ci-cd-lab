@@ -1,0 +1,13 @@
+name: Shared greeting
+on:
+  workflow_call:
+    inputs:
+      who:
+        required: true
+        type: string
+jobs:
+  say:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Greet
+        run: echo "Hello ${{ inputs.who }} from the shared workflow"
