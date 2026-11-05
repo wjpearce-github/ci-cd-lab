@@ -1,11 +1,18 @@
-name: Artifact demo
+# Uploads a file as a workflow artifact, downloadable from the run's summary page.
+name: Artifacts demo
+
 on: workflow_dispatch
+
+permissions:
+  contents: read
+
 jobs:
   report:
     runs-on: ubuntu-latest
     steps:
       - name: Produce a report
         run: echo "scan results would go here" > report.txt
+
       - name: Save it as an artifact
         uses: actions/upload-artifact@v4
         with:

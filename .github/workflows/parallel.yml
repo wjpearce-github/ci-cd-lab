@@ -1,14 +1,20 @@
-name: P demo
+# Jobs with no `needs:` between them run in parallel.
+name: Parallel jobs demo
+
 on: workflow_dispatch
+
+permissions:
+  contents: read
+
 jobs:
   job-a:
     runs-on: ubuntu-latest
     steps:
       - name: Work A
         run: echo "A starts" && sleep 20 && echo "A done"
+
   job-b:
     runs-on: ubuntu-latest
     steps:
       - name: Work B
         run: echo "B starts" && sleep 20 && echo "B done"
-

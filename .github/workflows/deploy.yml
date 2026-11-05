@@ -1,24 +1,38 @@
+# Deploys to AWS using GitHub OIDC: no long-lived AWS keys are stored in GitHub.
+#
+# The IAM role's trust policy only accepts tokens whose `sub` claim matches this
+# repo on the main branch. If you change how this job runs (e.g. add
+# `environment:`, run from another branch, or use a reusable workflow), the
+# `sub` claim changes and the trust policy must be updated to match.
 name: Deploy
+
 on: workflow_dispatch
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: eu-west-2
+  AWS_ROLE_ARN: arn:aws:iam::437603324536:role/github-lab-deploy
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
-      contents: read
+      id-token: write   # required to request the OIDC token
+      contents: read    # required by actions/checkout
     steps:
-      - uses: actions/checkout@v4
-      - name: Debug OIDC claims (prints claims only, not the token)
-        run: |
-          TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r .value)
-          echo "$TOKEN" | cut -d. -f2 | python3 -c 'import sys,base64,json;p=sys.stdin.read().strip();c=json.loads(base64.urlsafe_b64decode(p+"="*(-len(p)%4)));print(json.dumps({k:c.get(k) for k in ("sub","aud","iss","ref","repository")},indent=2))'
+      - name: Check out the code
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::437603324536:role/github-lab-deploy
-          aws-region: eu-west-2
-      - name: Who am I in AWS?
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Show the assumed AWS identity
         run: aws sts get-caller-identity
+
       - name: Deploy
         run: echo "push image to ECR and update the service here"

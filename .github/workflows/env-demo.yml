@@ -1,5 +1,11 @@
+# Job-level environment variables are available to every step in the job.
 name: Env demo
+
 on: workflow_dispatch
+
+permissions:
+  contents: read
+
 jobs:
   show:
     runs-on: ubuntu-latest
